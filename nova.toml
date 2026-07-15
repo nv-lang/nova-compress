@@ -1,0 +1,69 @@
+# nova.toml — nova-compress: compression codecs (deflate/gzip/zlib pure-Nova +
+# brotli decode over vendored libbrotlidec) for Nova.
+#
+# Layout: src/ canon. Source root is set via the `[lib] src` key
+# (compiler-codegen/src/manifest.rs) so module paths resolve relative to `src/`
+# (D78 — module path does NOT include `src`). This package's whole surface is
+# root peers: `src/brotli.nv` etc. -> `module compress` (extracted from the
+# monorepo's `std/encoding/compress`, Plan 205 — only the module path changed,
+# `std.encoding.compress` -> `compress`, D78 external-package naming, mirroring
+# nova-tls's `std.tls` -> `tls`).
+#
+# Native artifacts (`native/compress_shim.c` + headers + vendored brotli source)
+# are declared through the standard user-FFI build pipeline (`[ffi]`,
+# docs/ffi-cookbook.md) — NOT a compiler-internal special case (Plan 205 retired
+# the bespoke `detect_brotli`/`c_file_uses_brotli` gate in test_runner.rs).
+# Zero Rust/cargo: clang/cl.exe compiles the .c shim; libbrotlidec is built from
+# vendored SOURCE (google/brotli v1.2.0 decoder, Plan 205 followup 2026-07-15
+# — see native/brotli/VENDORED.md), the same way nova-tls builds mbedTLS from
+# vendored source (Plan 193 Ф.2 gate-3 `[ffi] vendor_src_dirs`) — no
+# platform-locked prebuilt .lib shipped in the repo.
+
+[package]
+name = "compress"
+version = "0.1.0"
+description = "Compression codecs for Nova (deflate/gzip/zlib pure-Nova + brotli decode over libbrotlidec) — extracted from Nova's std/encoding/compress (Plan 205)"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/nv-lang/nova-compress"
+
+[lib]
+src = "src"
+
+[ffi]
+# compress_shim.h MUST be force-included (not just #include'd from
+# compress_shim.c's own TU) — every OTHER translation unit that calls a
+# compress_brotli_* extern (any CU decoding brotli) needs the prototype visible
+# in ITS OWN TU too, or C falls back to implicit-int declaration (32-bit) ->
+# 64-bit handle truncation. Mirrors nova-tls's tls_shim.h force-include.
+c_shims      = ["native/compress_shim.c", "native/compress_shim.h"]
+include_dirs = ["native/", "native/brotli/include"]
+# libbrotlidec (decoder only, built from vendored source — never shipped as a
+# prebuilt lib). The link is unconditional; a program that never decodes
+# brotli has the dead code removed by the linker (clang
+# -ffunction-sections/-fdata-sections + /OPT:REF default on Windows /
+# -Wl,--gc-sections on Linux; MSVC /OPT:REF default).
+libs         = ["brotlidec"]
+# lib_dirs (mirrors nova-tls's native/lib for mbedTLS): conventional drop-in
+# location for the built brotlidec static lib — either the auto-built vendor
+# cache (default, see vendor_src_dirs below) or a manually dropped-in
+# prebuilt (auto-build is skipped when the lib is already present here).
+# Package-relative, so it resolves identically standalone and as an external
+# path-dep (base = this nova.toml's own dir, not the consumer's). Declaring
+# it explicitly (even while empty) is required to arm the generic
+# `[ffi] libs` detect-and-degrade probe (test_runner.rs
+# `first_missing_ffi_lib`) and the NOVA_FFI_HAVE_BROTLIDEC feature-gate
+# define (`ffi_have_defines`), so the shim picks the real decoder over the
+# stub.
+lib_dirs     = ["native/brotli/lib"]
+# vendor_src_dirs (Plan 205 followup, 2026-07-15 — same "195-pattern" as
+# nova-tls's mbedTLS vendoring, Plan 193 Ф.2 gate-3): brotli v1.2.0
+# decoder-only source is vendored at native/brotli/{dec,common}/ (see
+# native/brotli/VENDORED.md). When `brotlidec` is missing from `lib_dirs`,
+# the generic build-and-cache mechanism (test_runner.rs
+# `build_missing_vendor_ffi_libs`) compiles every `.c` directly under EACH
+# of these dirs (non-recursive) and archives the result into `lib_dirs[0]`
+# as `brotlidec`, so a clean checkout self-builds brotlidec on first
+# `nova test` — no manual vcpkg/system install and no vendored prebuilt
+# binary. The old detect-and-degrade SKIP remains the fallback if the build
+# itself fails (e.g. no cl.exe/cc on PATH).
+vendor_src_dirs = ["native/brotli/dec", "native/brotli/common"]
