@@ -4,6 +4,9 @@
 // в d336_checksum_test.nv.
 module compress
 
+import std.checksums.crc32.{crc32, crc32_init, crc32_update, crc32_finalize}
+import std.checksums.adler32.{adler32, adler32_init, adler32_update, adler32_finalize}
+
 
 test "crc32: пустой ввод → 0" {
     ro empty []u8 = []
