@@ -35,8 +35,8 @@ import compress.{gzip_decode, gzip_encode, brotli_decode}
 
 fn round_trip() -> Result[(), CompressError] {
     ro raw = "hello, nova".bytes()
-    ro packed = gzip_encode(raw, level: 6)!
-    ro back = gzip_decode(packed, max_output: 1 << 20)!  // bomb-cap
+    ro packed = gzip_encode(raw, level: 6)!!
+    ro back = gzip_decode(packed, max_output: 1 << 20)!!  // bomb-cap
     back
 }
 ```
