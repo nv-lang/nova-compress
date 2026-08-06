@@ -1,0 +1,7 @@
+google/brotli v1.2.0 (decoder only: common/ + dec/)
+commit 028fb5a23661f123017c060daa546b55cf4bde29 (tag v1.2.0)
+vendored as SOURCE (Plan 205 followup, 2026-07-15) — built by the generic
+[ffi] vendor_src_dirs build-and-cache mechanism (see native/brotli/VENDORED.md),
+not shipped as a prebuilt .lib. Mirrors nova-tls's mbedTLS vendoring.
+sources: common/{constants,context,dictionary,platform,shared_dictionary,transform}.c
+         dec/{bit_reader,decode,huffman,prefix,state,static_init}.c

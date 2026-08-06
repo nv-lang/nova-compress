@@ -1,0 +1,21 @@
+# Codegen artifacts (mirrors monorepo's std/**/*.c convention — nova test
+# writes generated .c/.exe/.obj next to source files it compiles).
+src/**/*.c
+src/**/*.exe
+src/**/*.obj
+src/**/*.pdb
+src/**/*.ilk
+
+# nova build/test scratch (obj dirs, libuv one-time build cache, lockfile
+# resolution scratch under target/).
+target/
+
+# native/brotli/lib/ (Plan 205 followup, 2026-07-15 — same pattern as
+# nova-tls's native/lib/ for mbedTLS, Plan 193 Ф.2 gate-3): auto-built
+# brotlidec archive (vendor_src_dirs build-and-cache output) and its scratch
+# obj dir — machine + toolchain specific, never committed (mirrors
+# target/libuv-cache/ not being committed in the monorepo). A manually
+# dropped-in prebuilt lib is likewise per-machine — don't commit either way.
+# The vendored SOURCE this archive is built from (native/brotli/{dec,common,
+# include}/) is NOT covered by this rule and IS committed.
+native/brotli/lib/
