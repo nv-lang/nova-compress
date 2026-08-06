@@ -1,3 +1,5 @@
+**English** | [Русский](README.ru.md)
+
 # nova-compress
 
 Compression codecs for [Nova](https://nv-lang.org) — `deflate`/`gzip`/`zlib`
