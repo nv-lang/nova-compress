@@ -844,7 +844,7 @@ test "inflate: truncated stream → UnexpectedEof" {
 }
 
 test "inflate: trailing data после BFINAL → TrailingData (raw strict)" {
-    ro comp = hexbytes("f348cdc9c9d751707175f3710c71550400" + "ff")
+    ro comp = hexbytes("f348cdc9c9d751707175f3710c71550400ff")
     ro r = inflate(comp, 1024)
     assert(match r { Err(e) => match e.kind { TrailingData => true, _ => false }, Ok(_) => false })
 }
