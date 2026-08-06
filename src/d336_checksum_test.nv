@@ -4,6 +4,9 @@
 
 module compress
 
+import std.checksums.crc32.{crc32}
+import std.checksums.adler32.{adler32}
+
 
 fn d336_hex(s str) -> []u8 {
     ro chars = s.bytes()

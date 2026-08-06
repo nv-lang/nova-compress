@@ -9,6 +9,8 @@
 
 module compress
 
+import std.checksums.crc32.{crc32, crc32_init, crc32_update, crc32_finalize}
+
 
 // ──────────────────────────────────────────────────────────────────────────
 // Разбор gzip-заголовка (переиспользуется one-shot + streaming)
