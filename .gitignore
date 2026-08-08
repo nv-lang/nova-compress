@@ -19,3 +19,6 @@ target/
 # The vendored SOURCE this archive is built from (native/brotli/{dec,common,
 # include}/) is NOT covered by this rule and IS committed.
 native/brotli/lib/
+
+# локальная обёртка сборки (пути машины разработчика)
+nova.sh
