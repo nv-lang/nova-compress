@@ -16,7 +16,7 @@
 # Zero Rust/cargo: clang/cl.exe compiles the .c shim; libbrotlidec is built from
 # vendored SOURCE (google/brotli v1.2.0 decoder, Plan 205 followup 2026-07-15
 # — see native/brotli/VENDORED.md), the same way nova-tls builds mbedTLS from
-# vendored source (Plan 193 Ф.2 gate-3 `[ffi] vendor_src_dirs`) — no
+# vendored source (Plan 193 phase 2 gate-3 `[ffi] vendor_src_dirs`) — no
 # platform-locked prebuilt .lib shipped in the repo.
 
 [package]
@@ -56,7 +56,7 @@ libs         = ["brotlidec"]
 # stub.
 lib_dirs     = ["native/brotli/lib"]
 # vendor_src_dirs (Plan 205 followup, 2026-07-15 — same "195-pattern" as
-# nova-tls's mbedTLS vendoring, Plan 193 Ф.2 gate-3): brotli v1.2.0
+# nova-tls's mbedTLS vendoring, Plan 193 phase 2 gate-3): brotli v1.2.0
 # decoder-only source is vendored at native/brotli/{dec,common}/ (see
 # native/brotli/VENDORED.md). When `brotlidec` is missing from `lib_dirs`,
 # the generic build-and-cache mechanism (test_runner.rs
