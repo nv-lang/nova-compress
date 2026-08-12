@@ -462,7 +462,7 @@ fn assign_codes(lens []int, n int) -> []int {
 
 // In-place minimum-redundancy code-length (Moffat/Katajainen). `a[0..n]` —
 // частоты, отсортированные по возрастанию; на выходе a[i] = код-длина позиции i.
-fn calc_min_redundancy(a mut []int, n int) -> () {
+fn calc_min_redundancy(mut a []int, n int) -> () {
     if n == 0 {
         return
     }
@@ -522,7 +522,7 @@ fn calc_min_redundancy(a mut []int, n int) -> () {
 
 // Ограничить макс. код-длину до maxbits, сохраняя полноту кода (Kraft==1).
 // num_codes[len] = число кодов длины len; всё >maxbits уже свёрнуто в maxbits.
-fn enforce_max_code_size(num_codes mut []int, code_list_len int, maxbits int) -> () {
+fn enforce_max_code_size(mut num_codes []int, code_list_len int, maxbits int) -> () {
     if code_list_len <= 1 {
         return
     }
