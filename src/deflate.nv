@@ -105,10 +105,10 @@ type DeflateEnc {
 }
 
 fn DeflateEnc.new() -> DeflateEnc {
-    mut _init_bytes []u8 = []u8.new()
-    _init_bytes.cap(64)
+    mut init_bytes []u8 = []u8.new()
+    init_bytes.cap(64)
     {
-        bytes: _init_bytes,
+        bytes: init_bytes,
         bitbuf: 0,
         bitcnt: 0,
         lbase: build_length_base(),

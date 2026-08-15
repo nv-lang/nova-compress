@@ -198,11 +198,11 @@ export type GzipReader value {
 
 #stable(since = "0.1")
 export fn GzipReader.new(max_output int) -> GzipReader {
-    mut _init_header_buf []u8 = []u8.new()
-    _init_header_buf.cap(16)
+    mut init_header_buf []u8 = []u8.new()
+    init_header_buf.cap(16)
     {
         inner: Inflater.new(max_output),
-        header_buf: _init_header_buf,
+        header_buf: init_header_buf,
         header_done: false,
         crc: crc32_init(),
         out_len: 0,
